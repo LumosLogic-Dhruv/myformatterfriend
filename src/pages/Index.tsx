@@ -80,26 +80,47 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Text */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            Transform Documents with{" "}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              AI
-            </span>
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Upload your document, choose a template, and let AI format it beautifully in seconds.
-          </p>
-        </motion.div>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        {/* Background Gradient Effects */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] gradient-dark opacity-60 blur-3xl" />
+          <div className="absolute top-40 left-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl animate-float" />
+          <div className="absolute top-60 right-1/4 w-[300px] h-[300px] bg-secondary/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "-3s" }} />
+        </div>
 
-        {/* Main Content */}
-        <div className="space-y-10">
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight"
+            >
+              Upload Your Document.
+              <br />
+              <span className="text-primary text-glow">We Handle the Rest.</span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
+            >
+              AI-powered document analysis & auto-formatting. Transform any document 
+              into a professionally styled template in seconds.
+            </motion.p>
+          </motion.div>
+        </div>
+      </section>
+
+      <main className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div className="space-y-16">
           {/* Upload Section */}
           <FileUpload onFileUpload={handleFileUpload} />
 
@@ -128,7 +149,7 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="py-8 mt-16 border-t border-border">
+      <footer className="py-8 border-t border-border glass">
         <div className="max-w-5xl mx-auto px-4 text-center text-sm text-muted-foreground">
           <p>© 2024 AI Document Formatter. Powered by intelligent automation.</p>
         </div>
