@@ -5,8 +5,9 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 exports.analyzeDocument = async (text, htmlTemplate) => {
   const models = [
-    { name: "gemini-2.5-flash", priority: 1 },
-    { name: "gemini-2.5-flash-lite", priority: 2 }
+    { name: "gemini-2.0-flash", priority: 1 },
+    { name: "gemini-2.5-flash", priority: 2 },
+    { name: "gemini-2.5-flash-lite", priority: 3 }
   ];
 
   try {
