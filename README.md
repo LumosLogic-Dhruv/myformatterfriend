@@ -43,7 +43,7 @@ MyFormatterFriend/
 
 <h2>💻 Technologies</h2>
 
-<b>Frontend:</b> HTML, CSS, JavaScript / React (optional) <br>
+<b>Frontend:</b> React + TypeScript, Tailwind CSS<br>
 <b>Backend:</b> Node.js, Express <br>
 <b>AI:</b> Google Gemini API <br>
 <b>File Processing:</b> PDF, DOCX, Excel parsers <br>
