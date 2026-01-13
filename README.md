@@ -1,7 +1,7 @@
 
 <!-- LOGO -->
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/5596a758-5f65-4836-808c-e8567ab6c74b" alt="MyFormatterFriend Logo" width="150" height="150">
+  <img src="https://github.com/user-attachments/assets/7450eb85-6f69-4e6a-aec2-5c0c58ed8a33" alt="MyFormatterFriend Logo" width="150" height="150">
 </p>
 
 <h1 align="center">📄 MyFormatterFriend — AI-Powered Document Formatting Platform</h1>
