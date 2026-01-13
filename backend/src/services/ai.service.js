@@ -3,14 +3,30 @@ require('dotenv').config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+// Global variable to track current model being used
+let currentModel = 'gemini-2.5-flash-lite'; // Set initial model
+
+exports.getCurrentModel = () => currentModel;
+
 exports.analyzeDocument = async (text, htmlTemplate) => {
   const models = [
-    { name: "gemini-2.0-flash", priority: 1 },
+    { name: "gemini-2.5-flash-lite", priority: 1 },
     { name: "gemini-2.5-flash", priority: 2 },
-    { name: "gemini-2.5-flash-lite", priority: 3 }
+    { name: "gemini-3-flash", priority: 3 },
+    { name: "gemini-robotics-er-1.5-preview", priority: 4 },
+    { name: "gemma-3-12b", priority: 5 },
+    { name: "gemma-3-1b", priority: 6 },
+    { name: "gemma-3-27b", priority: 7 },
+    { name: "gemma-3-2b", priority: 8 },
+    { name: "gemma-3-4b", priority: 9 }
   ];
 
   try {
+    console.log('=== AI SERVICE DEBUG ===');
+    console.log('GEMINI_API_KEY exists:', !!process.env.GEMINI_API_KEY);
+    console.log('GEMINI_API_KEY starts with AIza:', process.env.GEMINI_API_KEY?.startsWith('AIza'));
+    console.log('Initial model set to:', currentModel);
+    
     if (!process.env.GEMINI_API_KEY) {
       throw new Error('GEMINI_API_KEY is not configured');
     }
@@ -20,31 +36,36 @@ exports.analyzeDocument = async (text, htmlTemplate) => {
     }
 
     const prompt = `
-Hey Gemini, here I have provided 2 things:
-1. A document's extracted text 
-2. An HTML file which you have to use as a template
+You are a professional document formatter. Your task is to analyze the provided content and HTML template, then return ONLY the complete, updated HTML file with the content properly integrated.
 
-Now first analyze the HTML template and check which things you have to update in the content from the given extracted text of the file. Then see the text and analyze it, and prepare a final HTML template response file with updated content.
+IMPORTANT INSTRUCTIONS:
+- Return ONLY the final HTML code
+- Do NOT include any explanatory text, comments, or introductions
+- Do NOT wrap the response in markdown code blocks
+- Do NOT add phrases like "Here's the updated template" or "Absolutely!"
+- Simply provide the clean, complete HTML document ready for use
 
-Step by step:
-1. Look at the HTML template below and understand what content needs to be filled
-2. Look at the document text and find the relevant information
-3. Replace the template content with actual data from the document
-4. Return the complete updated HTML file
+TASK:
+1. Analyze the HTML template structure and identify placeholders
+2. Extract relevant information from the document content
+3. Replace template placeholders with actual data from the document
+4. Ensure proper formatting and maintain the template's styling
+5. Return the complete HTML document
 
-Document extracted text:
+Document content:
 ${text}
 
-HTML template to update:
+HTML template:
 ${htmlTemplate}
 
-Please provide the final HTML template with updated content:
+Provide the final HTML document:
 `;
 
-    // Try models in priority order
+    // Try Gemini models in priority order
     for (const modelInfo of models) {
       try {
         console.log(`Trying ${modelInfo.name} (priority ${modelInfo.priority})...`);
+        currentModel = modelInfo.name;
         const model = genAI.getGenerativeModel({ model: modelInfo.name });
         
         const result = await model.generateContent(prompt);
@@ -65,7 +86,7 @@ Please provide the final HTML template with updated content:
       } catch (modelError) {
         console.log(`${modelInfo.name} failed:`, modelError.message);
         
-        // If rate limited and this is the first model, wait and try once more
+        // If rate limited, wait and try once more
         if (modelError.status === 429 && modelInfo.priority === 1) {
           console.log('Rate limited on primary model, waiting 2 seconds...');
           await new Promise(resolve => setTimeout(resolve, 2000));
@@ -92,13 +113,15 @@ Please provide the final HTML template with updated content:
       }
     }
     
-    throw new Error('All models failed');
+    currentModel = 'text-based-fallback';
+    throw new Error('All Gemini models failed');
     
   } catch (error) {
     console.error('AI analysis error:', error);
+    currentModel = 'text-based-fallback';
     
     // If all AI models fail, create a simple text-based HTML filling
-    console.log('All AI models failed, using text-based processing...');
+    console.log('All Gemini models failed, using text-based processing...');
     console.log('Template length:', htmlTemplate.length);
     console.log('Text length:', text.length);
     

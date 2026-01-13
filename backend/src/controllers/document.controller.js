@@ -1,31 +1,70 @@
-const { extractFromAnyFile } = require('../services/extract.service');
-const { analyzeDocument } = require('../services/ai.service');
+const { extractFromAnyFile, extractFromMultipleFiles } = require('../services/extract.service');
+const { analyzeDocument, getCurrentModel } = require('../services/ai.service');
 const { generateHTML } = require('../services/template.service');
 const fs = require('fs');
 const path = require('path');
+const multer = require('multer');
+
+// Configure multer for multiple files
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(__dirname, '../uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
+  fileFilter: (req, file, cb) => {
+    // Allow all file types for flexibility
+    cb(null, true);
+  }
+});
+
+exports.uploadMiddleware = upload.fields([
+  { name: 'files', maxCount: 10 }, // Multiple input files
+  { name: 'templateFile', maxCount: 1 } // Single template file
+]);
 
 exports.processDocument = async (req, res) => {
   try {
-    const file = req.file;
+    const files = req.files?.files || [];
+    const templateFile = req.files?.templateFile?.[0];
     const { htmlTemplate, directText, outputFormat } = req.body;
     
     let text = '';
+    let currentModelUsed = getCurrentModel();
     
     // Handle different input types
     if (directText && directText.trim()) {
       // User pasted text directly
       text = directText.trim();
       console.log('Using direct text input, length:', text.length);
-    } else if (file) {
-      // User uploaded a file
-      text = await extractFromAnyFile(file.path, file.mimetype, file.originalname);
-      console.log('Extracted text length:', text.length);
-      console.log('First 500 characters of extracted text:', text.substring(0, 500));
+    } else if (files && files.length > 0) {
+      // User uploaded multiple files
+      if (files.length === 1) {
+        text = await extractFromAnyFile(files[0].path, files[0].mimetype, files[0].originalname);
+        console.log('Extracted text from single file, length:', text.length);
+      } else {
+        text = await extractFromMultipleFiles(files);
+        console.log('Extracted text from multiple files, length:', text.length);
+      }
       
-      // Clean up uploaded file
-      fs.unlinkSync(file.path);
+      // Clean up uploaded files
+      files.forEach(file => {
+        if (fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path);
+        }
+      });
     } else {
-      return res.status(400).json({ error: 'Either upload a file or provide text input' });
+      return res.status(400).json({ error: 'Either upload files or provide text input' });
     }
 
     if (!text.trim()) {
@@ -33,16 +72,29 @@ exports.processDocument = async (req, res) => {
     }
 
     let finalHtml;
+    let templateSource = 'generated';
     
-    if (htmlTemplate && htmlTemplate.trim()) {
+    if (templateFile) {
+      // User uploaded a template file
+      const templateContent = await extractFromAnyFile(templateFile.path, templateFile.mimetype, templateFile.originalname);
+      finalHtml = await analyzeDocument(text, templateContent);
+      templateSource = 'uploaded';
+      
+      // Clean up template file
+      if (fs.existsSync(templateFile.path)) {
+        fs.unlinkSync(templateFile.path);
+      }
+    } else if (htmlTemplate && htmlTemplate.trim()) {
       // User provided HTML template
       finalHtml = await analyzeDocument(text, htmlTemplate);
+      templateSource = 'provided';
     } else if (outputFormat && outputFormat.trim()) {
       // User specified output format, generate custom template
       const customTemplate = generateCustomTemplate(outputFormat);
       finalHtml = await analyzeDocument(text, customTemplate);
+      templateSource = 'auto-generated';
     } else {
-      return res.status(400).json({ error: 'Either provide HTML template or specify output format' });
+      return res.status(400).json({ error: 'Either provide HTML template, upload template file, or specify output format' });
     }
 
     // Save HTML file
@@ -55,22 +107,47 @@ exports.processDocument = async (req, res) => {
     const outputPath = path.join(outputDir, fileName);
     fs.writeFileSync(outputPath, finalHtml);
 
+    // Get current model being used
+    currentModelUsed = getCurrentModel();
+
     res.json({
       success: true,
       htmlContent: finalHtml,
       downloadUrl: `/api/document/download/${fileName}`,
       fileName,
-      extractedText: text.substring(0, 500) + '...' // Preview of extracted text
+      extractedText: text.substring(0, 500) + '...', // Preview of extracted text
+      templateSource,
+      filesProcessed: files.length,
+      modelUsed: currentModelUsed || 'text-based-fallback'
     });
   } catch (error) {
-    // Clean up uploaded file if it exists
-    if (req.file && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
+    // Clean up uploaded files if they exist
+    if (req.files?.files) {
+      req.files.files.forEach(file => {
+        if (fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path);
+        }
+      });
+    }
+    if (req.files?.templateFile?.[0] && fs.existsSync(req.files.templateFile[0].path)) {
+      fs.unlinkSync(req.files.templateFile[0].path);
     }
     
     console.error('Document processing error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      error: error.message,
+      modelUsed: getCurrentModel() || 'text-based-fallback'
+    });
   }
+};
+
+// Get current model status
+exports.getModelStatus = (req, res) => {
+  res.json({
+    success: true,
+    currentModel: getCurrentModel() || 'text-based-fallback',
+    timestamp: new Date().toISOString()
+  });
 };
 
 // Generate custom template based on user's desired output format

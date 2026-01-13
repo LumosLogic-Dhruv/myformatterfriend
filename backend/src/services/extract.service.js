@@ -59,6 +59,23 @@ exports.extractFromExcel = async (filePath) => {
   }
 };
 
+// Extract from multiple files
+exports.extractFromMultipleFiles = async (files) => {
+  let combinedText = '';
+  
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    try {
+      const text = await exports.extractFromAnyFile(file.path, file.mimetype, file.originalname);
+      combinedText += `\n\n=== FILE ${i + 1}: ${file.originalname} ===\n${text}\n`;
+    } catch (error) {
+      combinedText += `\n\n=== FILE ${i + 1}: ${file.originalname} (ERROR) ===\nFailed to extract: ${error.message}\n`;
+    }
+  }
+  
+  return combinedText;
+};
+
 exports.extractFromAnyFile = async (filePath, mimetype, originalname) => {
   const ext = path.extname(originalname).toLowerCase();
   
@@ -80,6 +97,11 @@ exports.extractFromAnyFile = async (filePath, mimetype, originalname) => {
     
     // Text files
     if (ext === '.txt' || mimetype.includes('text')) {
+      return await exports.extractFromTxt(filePath);
+    }
+    
+    // HTML files (for templates)
+    if (ext === '.html' || ext === '.htm' || mimetype.includes('html')) {
       return await exports.extractFromTxt(filePath);
     }
     
