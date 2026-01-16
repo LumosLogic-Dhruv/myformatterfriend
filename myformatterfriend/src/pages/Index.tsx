@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type ProcessingState = "idle" | "analyzing" | "extracting" | "applying" | "complete";
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://myformatterfriend.onrender.com/api';
 
 const Index = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -187,7 +187,7 @@ const Index = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000${downloadUrl}`);
+      const response = await fetch(`https://myformatterfriend.onrender.com${downloadUrl}`);
       if (!response.ok) throw new Error('Download failed');
       
       const blob = await response.blob();

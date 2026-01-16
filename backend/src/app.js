@@ -8,7 +8,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:8080'], // React dev servers
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:8080', 'https://myformatterfriend.netlify.app'],
   credentials: true
 }));
 app.use(express.json());
