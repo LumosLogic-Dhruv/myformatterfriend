@@ -4,9 +4,30 @@ require('dotenv').config();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Global variable to track current model being used
-let currentModel = 'gemini-2.5-flash-lite'; // Set initial model
+let currentModel = 'gemini-2.5-flash-lite';
+
+// Model limits dictionary
+const MODEL_LIMITS = {
+  'gemini-2.5-flash-lite': { rpm: 10, tpm: '250K', rpd: 20 },
+  'gemini-2.5-flash': { rpm: 5, tpm: '250K', rpd: 20 },
+  'gemini-3-flash': { rpm: 5, tpm: '250K', rpd: 20 },
+  'gemini-robotics-er-1.5-preview': { rpm: 10, tpm: '250K', rpd: 20 },
+  'gemma-3-12b': { rpm: 30, tpm: '15K', rpd: '14.4K' },
+  'gemma-3-1b': { rpm: 30, tpm: '15K', rpd: '14.4K' },
+  'gemma-3-27b': { rpm: 30, tpm: '15K', rpd: '14.4K' },
+  'gemma-3-2b': { rpm: 30, tpm: '15K', rpd: '14.4K' },
+  'gemma-3-4b': { rpm: 30, tpm: '15K', rpd: '14.4K' }
+};
 
 exports.getCurrentModel = () => currentModel;
+
+exports.getModelLimits = () => {
+  const limits = MODEL_LIMITS[currentModel];
+  return {
+    model: currentModel,
+    limits: limits || { rpm: 'N/A', tpm: 'N/A', rpd: 'N/A' }
+  };
+};
 
 exports.analyzeDocument = async (text, htmlTemplate) => {
   const models = [
@@ -36,29 +57,62 @@ exports.analyzeDocument = async (text, htmlTemplate) => {
     }
 
     const prompt = `
-You are a professional document formatter. Your task is to analyze the provided content and HTML template, then return ONLY the complete, updated HTML file with the content properly integrated.
+You are a professional document formatter, content analyst, and HTML structuring expert.
 
-IMPORTANT INSTRUCTIONS:
-- Return ONLY the final HTML code
-- Do NOT include any explanatory text, comments, or introductions
-- Do NOT wrap the response in markdown code blocks
-- Do NOT add phrases like "Here's the updated template" or "Absolutely!"
-- Simply provide the clean, complete HTML document ready for use
+Your task is to transform raw extracted content into a clean, complete, and professional HTML document based strictly on the provided output format.
 
-TASK:
-1. Analyze the HTML template structure and identify placeholders
-2. Extract relevant information from the document content
-3. Replace template placeholders with actual data from the document
-4. Ensure proper formatting and maintain the template's styling
-5. Return the complete HTML document
+CRITICAL OUTPUT RULES (MANDATORY):
+- Return ONLY the final HTML document
+- Do NOT include explanations, comments, introductions, or summaries
+- Do NOT wrap the output in markdown code blocks
+- Do NOT add conversational phrases or confirmations
+- The response must start with <!DOCTYPE html> or <html> and end with </html>
 
-Document content:
+CONTENT ANALYSIS INSTRUCTIONS:
+You are given extracted content from one or more documents. You must:
+- Preserve ALL meaningful information (no omissions)
+- Identify headings, sections, lists, tables, and key data points
+- Maintain logical hierarchy and relationships between content
+- Normalize inconsistent formatting from the source text
+- Avoid hallucinating or inventing information
+
+EXTRACTED CONTENT:
 ${text}
 
-HTML template:
+OUTPUT FORMAT REQUIREMENTS:
 ${htmlTemplate}
 
-Provide the final HTML document:
+HTML STRUCTURE & QUALITY RULES:
+- Follow the provided HTML template or format description strictly
+- Use semantic HTML elements wherever appropriate (header, section, article, table, ul, li, footer, etc.)
+- For styling, you can use CDN libraries like Bootstrap, Tailwind CSS, or custom CSS
+- Include CDN links in the <head> section if using external libraries
+- Ensure consistent indentation and clean structure
+- Ensure the document is valid, complete, and ready for direct web use
+- If some content does not clearly fit the template, place it in the most logically relevant section without discarding it
+
+STYLING OPTIONS:
+- You may use Bootstrap CDN: https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css
+- You may use Tailwind CDN: https://cdn.tailwindcss.com
+- You may write custom CSS in <style> tags for professional appearance
+- Apply modern, clean, and professional styling
+- Use proper colors, spacing, typography, and layout
+- Make the document visually appealing and easy to read
+
+ACCESSIBILITY & READABILITY:
+- Use proper heading hierarchy (h1 to h2 to h3)
+- Ensure readable structure and clear separation of sections
+- Avoid unnecessary repetition
+- Use appropriate contrast and font sizes
+
+FINAL TASK:
+1. Analyze all extracted content thoroughly
+2. Map content accurately to the required HTML structure
+3. Apply professional styling using CSS or CDN libraries
+4. Ensure completeness, clarity, and professional formatting
+5. Return ONLY the final, production-ready HTML document
+
+Generate the final HTML document now:
 `;
 
     // Try Gemini models in priority order

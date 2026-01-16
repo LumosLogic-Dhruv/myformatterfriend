@@ -1,5 +1,5 @@
 const { extractFromAnyFile, extractFromMultipleFiles } = require('../services/extract.service');
-const { analyzeDocument, getCurrentModel } = require('../services/ai.service');
+const { analyzeDocument, getCurrentModel, getModelLimits } = require('../services/ai.service');
 const { generateHTML } = require('../services/template.service');
 const fs = require('fs');
 const path = require('path');
@@ -39,23 +39,16 @@ exports.processDocument = async (req, res) => {
     const templateFile = req.files?.templateFile?.[0];
     const { htmlTemplate, directText, outputFormat } = req.body;
     
-    let text = '';
+    let combinedText = '';
     let currentModelUsed = getCurrentModel();
+    const textSources = [];
     
-    // Handle different input types
-    if (directText && directText.trim()) {
-      // User pasted text directly
-      text = directText.trim();
-      console.log('Using direct text input, length:', text.length);
-    } else if (files && files.length > 0) {
-      // User uploaded multiple files
-      if (files.length === 1) {
-        text = await extractFromAnyFile(files[0].path, files[0].mimetype, files[0].originalname);
-        console.log('Extracted text from single file, length:', text.length);
-      } else {
-        text = await extractFromMultipleFiles(files);
-        console.log('Extracted text from multiple files, length:', text.length);
-      }
+    // Combine text from multiple sources
+    if (files && files.length > 0) {
+      const extractedTexts = await extractFromMultipleFiles(files);
+      combinedText += extractedTexts + '\n\n';
+      textSources.push(`${files.length} file(s)`);
+      console.log(`Extracted text from ${files.length} files`);
       
       // Clean up uploaded files
       files.forEach(file => {
@@ -63,38 +56,56 @@ exports.processDocument = async (req, res) => {
           fs.unlinkSync(file.path);
         }
       });
-    } else {
-      return res.status(400).json({ error: 'Either upload files or provide text input' });
+    }
+    
+    if (directText && directText.trim()) {
+      combinedText += directText.trim();
+      textSources.push('direct text input');
+      console.log('Added direct text input');
     }
 
-    if (!text.trim()) {
-      return res.status(400).json({ error: 'No text content provided' });
+    if (!combinedText.trim()) {
+      return res.status(400).json({ error: 'No content provided. Upload files or paste text.' });
     }
+
+    // Create a formatted text file content
+    const textFileContent = `
+=== EXTRACTED CONTENT FROM MULTIPLE SOURCES ===
+Sources: ${textSources.join(', ')}
+Total Length: ${combinedText.length} characters
+Extraction Date: ${new Date().toISOString()}
+
+=== CONTENT START ===
+
+${combinedText}
+
+=== CONTENT END ===
+`;
 
     let finalHtml;
     let templateSource = 'generated';
+    let formatDescription = '';
     
     if (templateFile) {
-      // User uploaded a template file
       const templateContent = await extractFromAnyFile(templateFile.path, templateFile.mimetype, templateFile.originalname);
-      finalHtml = await analyzeDocument(text, templateContent);
+      formatDescription = `Template File: ${templateFile.originalname}`;
+      finalHtml = await analyzeDocument(textFileContent, templateContent);
       templateSource = 'uploaded';
       
-      // Clean up template file
       if (fs.existsSync(templateFile.path)) {
         fs.unlinkSync(templateFile.path);
       }
     } else if (htmlTemplate && htmlTemplate.trim()) {
-      // User provided HTML template
-      finalHtml = await analyzeDocument(text, htmlTemplate);
+      formatDescription = 'HTML Template Code';
+      finalHtml = await analyzeDocument(textFileContent, htmlTemplate);
       templateSource = 'provided';
     } else if (outputFormat && outputFormat.trim()) {
-      // User specified output format, generate custom template
+      formatDescription = outputFormat;
       const customTemplate = generateCustomTemplate(outputFormat);
-      finalHtml = await analyzeDocument(text, customTemplate);
+      finalHtml = await analyzeDocument(textFileContent, customTemplate);
       templateSource = 'auto-generated';
     } else {
-      return res.status(400).json({ error: 'Either provide HTML template, upload template file, or specify output format' });
+      return res.status(400).json({ error: 'Provide HTML template, upload template file, or describe output format' });
     }
 
     // Save HTML file
@@ -107,7 +118,6 @@ exports.processDocument = async (req, res) => {
     const outputPath = path.join(outputDir, fileName);
     fs.writeFileSync(outputPath, finalHtml);
 
-    // Get current model being used
     currentModelUsed = getCurrentModel();
 
     res.json({
@@ -115,13 +125,14 @@ exports.processDocument = async (req, res) => {
       htmlContent: finalHtml,
       downloadUrl: `/api/document/download/${fileName}`,
       fileName,
-      extractedText: text.substring(0, 500) + '...', // Preview of extracted text
+      extractedText: combinedText.substring(0, 500) + '...',
       templateSource,
       filesProcessed: files.length,
+      textSourcesUsed: textSources,
+      formatDescription,
       modelUsed: currentModelUsed || 'text-based-fallback'
     });
   } catch (error) {
-    // Clean up uploaded files if they exist
     if (req.files?.files) {
       req.files.files.forEach(file => {
         if (fs.existsSync(file.path)) {
@@ -143,9 +154,11 @@ exports.processDocument = async (req, res) => {
 
 // Get current model status
 exports.getModelStatus = (req, res) => {
+  const modelLimits = getModelLimits();
   res.json({
     success: true,
     currentModel: getCurrentModel() || 'text-based-fallback',
+    limits: modelLimits.limits,
     timestamp: new Date().toISOString()
   });
 };

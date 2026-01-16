@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SEO Analysis Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 40px; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 8px;}
+        .header { text-align: center; border-bottom: 3px solid #007bff; padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { color: #333; }
+        .header p { color: #555; }
+        .section { margin: 30px 0; padding: 25px; background: #f8f9fa; border-radius: 8px; border-left: 5px solid #007bff; }
+        .section h2 { color: #007bff; margin-top: 0; }
+        .metric { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e0e0e0; }
+        .metric:last-child { border-bottom: none; }
+        .score { font-weight: bold; color: #28a745; }
+        .grade { font-weight: bold; color: #ffc107; } /* Yellow for grade */
+        .bad-score { font-weight: bold; color: #dc3545; } /* Red for bad score */
+        .key-finding { margin-bottom: 15px; }
+        .key-finding strong { color: #007bff; }
+        .technical-item { margin-bottom: 10px; }
+        .technical-item span { display: inline-block; width: 250px; font-weight: bold;}
+        .yes { color: #28a745; }
+        .no { color: #dc3545; }
+        .neutral { color: #6c757d; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px;}
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left;}
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        .icon { font-family: "Font Awesome 5 Free"; font-weight: 900; margin-right: 5px;}
+        .icon.yes:before { content: "\f00c"; } /* Checkmark */
+        .icon.no:before { content: "\f00d"; } /* Cross */
+        .icon.neutral:before { content: "\f05a"; } /* Info circle */
+    </style>
+    <!-- You can optionally add Bootstrap or other CDN here if preferred -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SEO Analysis Report</h1>
+            <p>Comprehensive website performance analysis</p>
+        </div>
+        
+        <div class="section">
+            <h2>Website Overview</h2>
+            <div class="metric"><span>Website:</span><span class="score">washcure-2f63e.web.app</span></div>
+            <div class="metric"><span>Overall Grade:</span><span class="grade">A</span></div>
+            <div class="metric"><span>SEO Score:</span><span class="score">Very Good</span></div>
+        </div>
+        
+        <div class="section">
+            <h2>Key Findings</h2>
+            <p class="key-finding"><strong>On-Page SEO:</strong> Your On-Page SEO is very good and well optimized. This ensures Search Engines can understand your content appropriately and helps it rank for relevant keywords. Continue to build on this strong position through testing content improvements for gradual gains.</p>
+            <p class="key-finding"><strong>Usability:</strong> Your page is highly usable across devices, important for maximizing audience and minimizing bounce rates. It renders well on different devices.</p>
+            <p class="key-finding"><strong>Performance:</strong> Your page has performed very well, indicating it should be reasonably fast and responsive for users. Performance is crucial for user experience and indirectly affects search engine rankings. Continue to monitor for fluctuations.</p>
+            <p class="key-finding"><strong>Social Presence:</strong> Your social presence could be better. There isn't a strong level of social activity detected, or profiles may not be easily visible. Social activity is important for customer communication, brand awareness, and driving traffic.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Recommendations</h2>
+            <p class="key-finding"><strong>On-Page SEO:</strong> While your Title Tag and Meta Description are within optimal length, consider further testing content improvements for gradual gains.</p>
+            <p class="key-finding"><strong>Social Presence:</strong> Create and link to all common social profiles on your website for better visibility. Work on building a following on these networks. Consider installing a Facebook Pixel for retargeting and audience building if you plan Facebook marketing.</p>
+            <p class="key-finding"><strong>Local SEO:</strong> Ensure your full business address is clearly visible on the site. Add Local Business Schema markup for better search engine understanding. Claim or create and complete your Google Business Profile with accurate NAP (Name, Address, Phone) details. Proactively encourage and respond to Google reviews.</p>
+            <p class="key-finding"><strong>Technical:</strong> It is recommended to add a DMARC record to help prevent email spoofing and improve deliverability. Implement an SPF record to identify allowed mail servers and combat spoofing.</p>
+            <p class="key-finding"><strong>LLM Readability:</strong> Your page has a high rendering percentage (1907% / 2071%). Dynamically rendering a lot of page content risks important information being missed by LLMs that generally do not read this content. Ensure important site content is present in the raw HTML and minimize dynamic content from plugins/JavaScript.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Technical Details</h2>
+            
+            <h3>On-Page SEO</h3>
+            <div class="technical-item"><span>Title Tag:</span> <span class="yes"><i class="icon yes"></i>Optimal length (59 chars).</span></div>
+            <div class="technical-item"><span>Meta Description Tag:</span> <span class="yes"><i class="icon yes"></i>Optimal length (153 chars).</span></div>
+            <div class="technical-item"><span>SERP Snippet Preview:</span> <span class="neutral"><i class="icon neutral"></i>Illustrative, Search Engines dynamically generate this.</span></div>
+            <div class="technical-item"><span>Hreflang Usage:</span> <span class="no"><i class="icon no"></i>Not making use of Hreflang attributes.</span></div>
+            <div class="technical-item"><span>Language Attribute:</span> <span class="yes"><i class="icon yes"></i>Declared: English.</span></div>
+            <div class="technical-item"><span>H1 Header Tag Usage:</span> <span class="yes"><i class="icon yes"></i>Present.</span></div>
+            <div class="technical-item"><span>H2-H6 Header Tag Usage:</span> <span class="yes"><i class="icon yes"></i>Multiple levels used.</span></div>
+            
+            <h4>Header Tag Frequencies</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Header Tag</th>
+                        <th>Frequency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>H2</td><td>4-5</td></tr>
+                    <tr><td>H3</td><td>13</td></tr>
+                    <tr><td>H4</td><td>6</td></tr>
+                    <tr><td>H5</td><td>0</td></tr>
+                    <tr><td>H6</td><td>0</td></tr>
+                </tbody>
+            </table>
+
+            <div class="technical-item"><span>Keyword Consistency:</span> <span class="yes"><i class="icon yes"></i>Good distribution across important HTML Tags.</span></div>
+            
+            <h4>Individual Keywords Frequency</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Keyword</th>
+                        <th>Title</th>
+                        <th>Meta Description</th>
+                        <th>Headings</th>
+                        <th>Page</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>care</td><td>18-22</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>indian</td><td>16-14</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>cleaning</td><td>13</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>service</td><td>12</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>laundry</td><td>11-11</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>premium</td><td>10-11</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>dry</td><td>10</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>services</td><td>9</td><td>-</td><td>-</td><td>-</td></tr>
+                </tbody>
+            </table>
+
+            <h4>Phrases Frequency</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phrase</th>
+                        <th>Title</th>
+                        <th>Meta Description</th>
+                        <th>Headings</th>
+                        <th>Page</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>dry cleaning</td><td>8</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>garment care</td><td>6</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>laundry and dry</td><td>5</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>stain removal</td><td>4-5</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>indian households</td><td>4</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>cleaning services</td><td>3</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>express service</td><td>3-4</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>across india</td><td>3</td><td>-</td><td>-</td><td>-</td></tr>
+                </tbody>
+            </table>
+            
+            <div class="technical-item"><span>Amount of Content:</span> <span class="yes"><i class="icon yes"></i>Good level of textual content. Word Count: 609-646.</span></div>
+            <div class="technical-item"><span>Image Alt Attributes:</span> <span class="yes"><i class="icon yes"></i>No images missing Alt Attributes.</span></div>
+            <div class="technical-item"><span>Canonical Tag:</span> <span class="yes"><i class="icon yes"></i>Page is using the Canonical Tag.</span></div>
+            <div class="technical-item"><span>Noindex Tag Test:</span> <span class="yes"><i class="icon yes"></i>Page is not using the Noindex Tag.</span></div>
+            <div class="technical-item"><span>Noindex Header Test:</span> <span class="yes"><i class="icon yes"></i>Page is not using the Noindex Header.</span></div>
+            <div class="technical-item"><span>SSL Enabled:</span> <span class="yes"><i class="icon yes"></i>Website has SSL enabled.</span></div>
+            <div class="technical-item"><span>HTTPS Redirect:</span> <span class="yes"><i class="icon yes"></i>Page successfully redirects to HTTPS version.</span></div>
+            <div class="technical-item"><span>Robots.txt:</span> <span class="yes"><i class="icon yes"></i>Website appears to have a robots.txt file.</span></div>
+            <div class="technical-item"><span>Blocked by Robots.txt:</span> <span class="yes"><i class="icon yes"></i>Page does not appear to be blocked.</span></div>
+            <div class="technical-item"><span>Llms.txt:</span> <span class="yes"><i class="icon yes"></i>Website appears to have a llms.txt file.</span></div>
+            <div class="technical-item"><span>XML Sitemaps:</span> <span class="yes"><i class="icon yes"></i>Website appears to have an XML Sitemap.</span></div>
+            <div class="technical-item"><span>Analytics:</span> <span class="no"><i class="icon no"></i>Could not detect an analytics tool.</span></div>
+            <div class="technical-item"><span>Schema.org Structured Data:</span> <span class="yes"><i class="icon yes"></i>Using JSON LD Schema.</span></div>
+            <div class="technical-item"><span>Identity Schema:</span> <span class="no"><i class="icon no"></i>No Organization or Person Schema identified.</span></div>
+            <div class="technical-item"><span>Rendered Content (LLM Readability):</span> <span class="no"><i class="icon no"></i>High rendering (1907%-2071%). Risks LLM missing content.</span></div>
+
+            <h3>Usability</h3>
+            <div class="technical-item"><span>Device Rendering:</span> <span class="yes"><i class="icon yes"></i>Renders well across devices.</span></div>
+            <div class="technical-item"><span>Google's Core Web Vitals:</span> <span class="no"><i class="icon no"></i>No sufficient real-world speed data.</span></div>
+            <div class="technical-item"><span>Use of Mobile Viewports:</span> <span class="yes"><i class="icon yes"></i>Viewport specified, renders appropriately.</span></div>
+            <div class="technical-item"><span>Google's PageSpeed Insights - Mobile:</span> <span class="yes"><i class="icon yes"></i>Scoring well (93-91).</span></div>
+            <div class="technical-item"><span>Google's PageSpeed Insights - Desktop:</span> <span class="yes"><i class="icon yes"></i>Scoring well (98-99).</span></div>
+            <div class="technical-item"><span>Flash Used?:</span> <span class="yes"><i class="icon yes"></i>No Flash content identified.</span></div>
+            <div class="technical-item"><span>iFrames Used?:</span> <span class="yes"><i class="icon yes"></i>No iFrames detected.</span></div>
+            <div class="technical-item"><span>Favicon:</span> <span class="yes"><i class="icon yes"></i>Favicon specified.</span></div>
+            <div class="technical-item"><span>Email Privacy:</span> <span class="yes"><i class="icon yes"></i>No plain text email addresses found.</span></div>
+            <div class="technical-item"><span>Legible Font Sizes:</span> <span class="yes"><i class="icon yes"></i>Text appears legible.</span></div>
+            <div class="technical-item"><span>Tap Target Sizing:</span> <span class="yes"><i class="icon yes"></i>Appropriately sized for touchscreens.</span></div>
+
+            <h3>Performance</h3>
+            <div class="technical-item"><span>Website Load Speed:</span> <span class="yes"><i class="icon yes"></i>Loads in a reasonable amount of time.</span></div>
+            <div class="technical-item"><span>Server Response:</span> <span>0.1s - 0.0s</span></div>
+            <div class="technical-item"><span>All Page Content Loaded:</span> <span>0.5s - 0.4s</span></div>
+            <div class="technical-item"><span>All Page Scripts Complete:</span> <span>0.9s</span></div>
+            <div class="technical-item"><span>Website Download Size:</span> <span class="yes"><i class="icon yes"></i>Reasonably low file size (0.42MB - 0.54MB).</span></div>
+            
+            <h4>Download Page Size Breakdown</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File Type</th>
+                        <th>Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>HTML</td><td>0MB</td></tr>
+                    <tr><td>CSS</td><td>0.01MB</td></tr>
+                    <tr><td>JS</td><td>0.19MB</td></tr>
+                    <tr><td>Images</td><td>0.17MB - 0.28MB</td></tr>
+                    <tr><td>Other</td><td>0.06MB</td></tr>
+                    <tr><td><strong>Total</strong></td><td><strong>0.42MB - 0.54MB</strong></td></tr>
+                </tbody>
+            </table>
+
+            <div class="technical-item"><span>Compression Usage:</span> <span class="yes"><i class="icon yes"></i>Reasonable level of compression used.</span></div>
+            <div class="technical-item"><span>Compression Rate:</span> <span>61% - 55%</span></div>
+
+            <h4>Resources Breakdown</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Total Objects</td><td>10 - 16</td></tr>
+                    <tr><td>HTML Pages</td><td>3</td></tr>
+                    <tr><td>JS Resources</td><td>1</td></tr>
+                    <tr><td>CSS Resources</td><td>1</td></tr>
+                    <tr><td>Images</td><td>2 - 8</td></tr>
+                    <tr><td>Other Resources</td><td>3</td></tr>
+                </tbody>
+            </table>
+
+            <div class="technical-item"><span>Google Accelerated Mobile Pages (AMP):</span> <span class="no"><i class="icon no"></i>AMP not enabled.</span></div>
+            <div class="technical-item"><span>JavaScript Errors:</span> <span class="yes"><i class="icon yes"></i>No JavaScript errors reported.</span></div>
+            <div class="technical-item"><span>HTTP/2 Usage:</span> <span class="yes"><i class="icon yes"></i>Using recommended HTTP/2 protocol.</span></div>
+            <div class="technical-item"><span>Optimize Images:</span> <span class="yes"><i class="icon yes"></i>All images appear to be optimized.</span></div>
+            <div class="technical-item"><span>Minification:</span> <span class="yes"><i class="icon yes"></i>JavaScript and CSS files appear minified.</span></div>
+            <div class="technical-item"><span>Deprecated HTML:</span> <span class="yes"><i class="icon yes"></i>No deprecated HTML tags found.</span></div>
+            <div class="technical-item"><span>Inline Styles:</span> <span class="yes"><i class="icon yes"></i>No Inline Styles found.</span></div>
+
+            <h3>Social</h3>
+            <div class="technical-item"><span>Facebook Page Linked:</span> <span class="yes"><i class="icon yes"></i>Linked.</span></div>
+            <div class="technical-item"><span>Facebook Open Graph Tags:</span> <span class="yes"><i class="icon yes"></i>Used.</span></div>
+            <div class="technical-item"><span>Facebook Pixel:</span> <span class="no"><i class="icon no"></i>Not detected.</span></div>
+            <div class="technical-item"><span>X (formerly Twitter) Account Linked:</span> <span class="yes"><i class="icon yes"></i>Linked.</span></div>
+            <div class="technical-item"><span>X Cards:</span> <span class="yes"><i class="icon yes"></i>Used.</span></div>
+            <div class="technical-item"><span>Instagram Linked:</span> <span class="yes"><i class="icon yes"></i>Linked.</span></div>
+            <div class="technical-item"><span>LinkedIn Page Linked:</span> <span class="no"><i class="icon no"></i>Not found.</span></div>
+            <div class="technical-item"><span>YouTube Channel Linked:</span> <span class="no"><i class="icon no"></i>Not found.</span></div>
+            <div class="technical-item"><span>Address & Phone Shown on Website:</span> <span class="no"><i class="icon no"></i>Missing: Address. Phone present.</span></div>
+            <div class="technical-item"><span>Local Business Schema:</span> <span class="no"><i class="icon no"></i>Not identified.</span></div>
+            <div class="technical-item"><span>Google Business Profile Identified:</span> <span class="no"><i class="icon no"></i>Not identified.</span></div>
+            <div class="technical-item"><span>Google Business Profile Completeness:</span> <span class="no"><i class="icon no"></i>Not identified.</span></div>
+            <div class="technical-item"><span>Google Reviews:</span> <span class="no"><i class="icon no"></i>Not identified.</span></div>
+            
+            <h3>Email & Security</h3>
+            <div class="technical-item"><span>DMARC Record:</span> <span class="no"><i class="icon no"></i>Not in place.</span></div>
+            <div class="technical-item"><span>SPF Record:</span> <span class="no"><i class="icon no"></i>Not in place.</span></div>
+
+            <h3>Technology List</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Technology</th>
+                        <th>Version/Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Firebase</td><td>-</td></tr>
+                    <tr><td>HSTS</td><td>-</td></tr>
+                    <tr><td>HTTP/3</td><td>-</td></tr>
+                    <tr><td>Server IP Address</td><td>199.36.158.100</td></tr>
+                    <tr><td>DNS Servers</td><td>ns-tld1.charlestonroadregistry.com, ns-tld2.charlestonroadregistry.com, ns-tld3.charlestonroadregistry.com, ns-tld4.charlestonroadregistry.com, ns-tld5.charlestonroadregistry.com</td></tr>
+                    <tr><td>Charset</td><td>text/html; charset=utf-8</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
