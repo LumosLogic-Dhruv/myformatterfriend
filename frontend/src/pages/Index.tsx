@@ -15,7 +15,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type ProcessingState = "idle" | "analyzing" | "extracting" | "applying" | "complete";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://myformatterfriend.onrender.com/api';
+
+console.log('API_BASE_URL:', API_BASE_URL);
+console.log('Environment variables:', import.meta.env);
 
 const Index = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -38,7 +41,13 @@ const Index = () => {
   useEffect(() => {
     const fetchModelStatus = async () => {
       try {
+        console.log('API_BASE_URL:', API_BASE_URL);
         console.log('Fetching from:', `${API_BASE_URL}/document/model-status`);
+        
+        // First try a simple health check
+        const healthResponse = await fetch(`${API_BASE_URL}/health`);
+        console.log('Health check response:', healthResponse.status);
+        
         const response = await fetch(`${API_BASE_URL}/document/model-status`);
         
         if (!response.ok) {
@@ -56,7 +65,7 @@ const Index = () => {
       } catch (error) {
         console.error('Failed to fetch model status:', error);
         setBackendConnected(false);
-        setCurrentModel('Waking up server...');
+        setCurrentModel('Connection Failed');
         setModelLimits(null);
       }
     };
@@ -195,7 +204,7 @@ const Index = () => {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${downloadUrl}`);
+      const response = await fetch(`${API_BASE_URL.replace('/api', '')}${downloadUrl}`);
       if (!response.ok) throw new Error('Download failed');
       
       const blob = await response.blob();
