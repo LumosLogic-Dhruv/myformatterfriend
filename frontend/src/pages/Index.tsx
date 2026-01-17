@@ -12,13 +12,9 @@ import RealtimePreview from "@/components/RealtimePreview";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { API_CONFIG, apiCall } from "@/lib/api";
 
 type ProcessingState = "idle" | "analyzing" | "extracting" | "applying" | "complete";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://myformatterfriend.onrender.com/api';
-
-console.log('API_BASE_URL:', API_BASE_URL);
-console.log('Environment variables:', import.meta.env);
 
 const Index = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -41,19 +37,11 @@ const Index = () => {
   useEffect(() => {
     const fetchModelStatus = async () => {
       try {
-        console.log('API_BASE_URL:', API_BASE_URL);
-        console.log('Fetching from:', `${API_BASE_URL}/document/model-status`);
-        
         // First try a simple health check
-        const healthResponse = await fetch(`${API_BASE_URL}/health`);
+        const healthResponse = await apiCall(API_CONFIG.ENDPOINTS.HEALTH);
         console.log('Health check response:', healthResponse.status);
         
-        const response = await fetch(`${API_BASE_URL}/document/model-status`);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
+        const response = await apiCall(API_CONFIG.ENDPOINTS.MODEL_STATUS);
         const data = await response.json();
         console.log('Model status response:', data);
         
@@ -140,16 +128,10 @@ const Index = () => {
       setProcessingState("applying");
       
       // Send request to backend
-      console.log('Sending request to:', `${API_BASE_URL}/document/process`);
-      const response = await fetch(`${API_BASE_URL}/document/process`, {
+      const response = await apiCall(API_CONFIG.ENDPOINTS.PROCESS, {
         method: 'POST',
         body: formData,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Processing failed');
-      }
 
       const result = await response.json();
       
@@ -204,7 +186,7 @@ const Index = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL.replace('/api', '')}${downloadUrl}`);
+      const response = await fetch(`https://myformatterfriend.onrender.com${downloadUrl}`);
       if (!response.ok) throw new Error('Download failed');
       
       const blob = await response.blob();
