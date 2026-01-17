@@ -16,7 +16,9 @@ export const apiCall = async (endpoint: string, options?: RequestInit) => {
   
   const response = await fetch(url, {
     ...options,
+    mode: 'cors',
     headers: {
+      'Content-Type': 'application/json',
       ...options?.headers,
     }
   });
