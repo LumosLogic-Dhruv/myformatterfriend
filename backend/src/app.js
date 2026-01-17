@@ -20,12 +20,21 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Add root API route for testing
+app.get('/api', (req, res) => {
+  res.json({ message: 'MyFormatterFriend API is running', status: 'ok' });
+});
+
 // Routes
 app.use('/api/document', documentRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
+});
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'API Health Check' });
 });
 
 // Error handling middleware

@@ -38,8 +38,16 @@ const Index = () => {
   useEffect(() => {
     const fetchModelStatus = async () => {
       try {
+        console.log('Fetching from:', `${API_BASE_URL}/document/model-status`);
         const response = await fetch(`${API_BASE_URL}/document/model-status`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
         const data = await response.json();
+        console.log('Model status response:', data);
+        
         if (data.success) {
           setCurrentModel(data.currentModel);
           setModelLimits(data.limits);
