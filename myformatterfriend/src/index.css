@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,7 +18,7 @@
   src: url('/NBInternationalProBoo.ttf');
   font-weight: normal;
   font-style: normal;
-  font-display: swap; /* Helps with loading performance */
+  font-display: swap;
 }
 
 /* 2. Apply it to your elements */
@@ -29,8 +31,6 @@ h1, h2, h3, h4, h5, h6, .headline, .logo-text, .font-headline {
 body, p, .body-text, .font-body {
   font-family: 'NBInternationalProBoo', sans-serif;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* Premium Dark Theme - AI Document Platform */
 
