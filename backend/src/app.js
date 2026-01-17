@@ -11,7 +11,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://your-vercel-app.vercel.app"
+      "https://myformatterfriendvercel.vercel.app"
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
