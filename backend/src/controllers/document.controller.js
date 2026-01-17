@@ -154,13 +154,26 @@ ${combinedText}
 
 // Get current model status
 exports.getModelStatus = (req, res) => {
-  const modelLimits = getModelLimits();
-  res.json({
-    success: true,
-    currentModel: getCurrentModel() || 'text-based-fallback',
-    limits: modelLimits.limits,
-    timestamp: new Date().toISOString()
-  });
+  try {
+    console.log('Model status endpoint called');
+    const modelLimits = getModelLimits();
+    const response = {
+      success: true,
+      currentModel: getCurrentModel() || 'text-based-fallback',
+      limits: modelLimits.limits,
+      timestamp: new Date().toISOString()
+    };
+    console.log('Sending model status response:', response);
+    res.json(response);
+  } catch (error) {
+    console.error('Model status error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      currentModel: 'error',
+      timestamp: new Date().toISOString()
+    });
+  }
 };
 
 // Generate custom template based on user's desired output format
