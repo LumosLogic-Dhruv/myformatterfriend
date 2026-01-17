@@ -10,8 +10,8 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://formatterfriend.vercel.app/",
-      "https://formatterfriend-oykrppvyb-dhruv-sheres-projects.vercel.app/",
+      "https://formatterfriend.vercel.app",
+      "https://formatterfriend-oykrppvyb-dhruv-sheres-projects.vercel.app",
       "http://localhost:5173"
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
