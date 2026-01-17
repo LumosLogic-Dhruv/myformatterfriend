@@ -1,7 +1,7 @@
 [build]
   base = "myformatterfriend"
   command = "npm run build"
-  publish = "myformatterfriend/dist"
+  publish = "dist"
 
 [[redirects]]
   from = "/*"
