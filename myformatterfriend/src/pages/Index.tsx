@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type ProcessingState = "idle" | "analyzing" | "extracting" | "applying" | "complete";
 
-const API_BASE_URL = 'https://myformatterfriend.onrender.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Index = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -48,7 +48,7 @@ const Index = () => {
       } catch (error) {
         console.error('Failed to fetch model status:', error);
         setBackendConnected(false);
-        setCurrentModel('Connection Failed');
+        setCurrentModel('Waking up server...');
         setModelLimits(null);
       }
     };
@@ -187,7 +187,7 @@ const Index = () => {
     }
 
     try {
-      const response = await fetch(`https://myformatterfriend.onrender.com${downloadUrl}`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${downloadUrl}`);
       if (!response.ok) throw new Error('Download failed');
       
       const blob = await response.blob();
@@ -252,7 +252,7 @@ const Index = () => {
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${backendConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
               <span className="text-sm font-medium text-foreground">
-                {backendConnected ? 'Backend Connected' : 'Backend Disconnected'}
+                {backendConnected ? 'Backend Connected' : 'Waking up server, please wait...'}
               </span>
             </div>
             <div className="h-4 w-px bg-border"></div>
