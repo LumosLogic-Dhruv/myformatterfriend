@@ -37,51 +37,37 @@ const Index = () => {
   useEffect(() => {
     const fetchModelStatus = async () => {
       try {
-        console.log('Testing backend connection...');
+        console.log('Connecting to Render backend from Vercel frontend...');
         
-        // Test basic connectivity first
-        const testResponse = await fetch('https://myformatterfriend.onrender.com/api/health', {
+        const response = await fetch('https://myformatterfriend.onrender.com/api/document/model-status', {
           method: 'GET',
-          mode: 'cors'
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json'
+          }
         });
         
-        console.log('Health check status:', testResponse.status);
-        
-        if (testResponse.ok) {
-          const healthData = await testResponse.json();
-          console.log('Health check data:', healthData);
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Backend connected successfully:', data);
           
-          // Now try model status
-          const response = await fetch('https://myformatterfriend.onrender.com/api/document/model-status', {
-            method: 'GET',
-            mode: 'cors'
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            console.log('Model status response:', data);
-            
-            if (data.success) {
-              setCurrentModel(data.currentModel);
-              setModelLimits(data.limits);
-              setBackendConnected(true);
-            }
-          } else {
-            throw new Error(`Model status failed: ${response.status}`);
+          if (data.success) {
+            setCurrentModel(data.currentModel);
+            setModelLimits(data.limits);
+            setBackendConnected(true);
           }
         } else {
-          throw new Error(`Health check failed: ${testResponse.status}`);
+          throw new Error(`Backend responded with ${response.status}`);
         }
       } catch (error) {
-        console.error('Backend connection failed:', error);
+        console.error('Vercel-Render connection failed:', error);
         setBackendConnected(false);
-        setCurrentModel('Connection Failed');
+        setCurrentModel('Backend Unavailable');
         setModelLimits(null);
       }
     };
     
     fetchModelStatus();
-    // Poll every 30 seconds
     const interval = setInterval(fetchModelStatus, 30000);
     return () => clearInterval(interval);
   }, []);

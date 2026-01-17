@@ -6,10 +6,14 @@ const documentRoutes = require('./routes/document.routes');
 
 const app = express();
 
-// Middleware
+// Middleware - Proper CORS for Vercel-Render communication
 app.use(
   cors({
-    origin: '*',
+    origin: [
+      "https://myformatterfriendvercel.vercel.app",
+      "https://myformatterfriendvercel-4b5sc0tad-dhruv-sheres-projects.vercel.app",
+      "http://localhost:5173"
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: false
