@@ -1,11 +1,12 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Code, Upload, Type, FileCode } from "lucide-react";
+import { Code, Upload, Type, FileCode, LayoutTemplate } from "lucide-react";
 import Header from "@/components/Header";
 import FileUpload from "@/components/FileUpload";
 import TextInput from "@/components/TextInput";
 import HTMLTemplateInput from "@/components/HTMLTemplateInput";
 import TemplateFileUpload from "@/components/TemplateFileUpload";
+import TemplateSelection from "@/components/TemplateSelection";
 import OutputFormat from "@/components/OutputFormat";
 import AIActionButton from "@/components/AIActionButton";
 import RealtimePreview from "@/components/RealtimePreview";
@@ -22,6 +23,7 @@ const Index = () => {
   const [directText, setDirectText] = useState<string>("");
   const [htmlTemplate, setHtmlTemplate] = useState<string>("");
   const [outputFormat, setOutputFormat] = useState<string>("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
   const [processingState, setProcessingState] = useState<ProcessingState>("idle");
   const [showOutput, setShowOutput] = useState(false);
   const [processedData, setProcessedData] = useState<any>(null);
@@ -93,11 +95,11 @@ const Index = () => {
   }, []);
 
   const handleGenerate = useCallback(async () => {
-    if ((!uploadedFiles.length && !directText.trim()) || 
-        (!htmlTemplate.trim() && !outputFormat.trim() && !templateFile)) {
+    if ((!uploadedFiles.length && !directText.trim()) ||
+        (!htmlTemplate.trim() && !outputFormat.trim() && !templateFile && !selectedTemplateId)) {
       toast({
         title: "Missing Input",
-        description: "Please provide files/text and template/format.",
+        description: "Please provide files/text and select a template or describe the format.",
         variant: "destructive",
       });
       return;
@@ -128,6 +130,9 @@ const Index = () => {
       }
       if (outputFormat.trim()) {
         formData.append('outputFormat', outputFormat);
+      }
+      if (selectedTemplateId) {
+        formData.append('templateId', selectedTemplateId);
       }
 
       setProcessingState("extracting");
@@ -187,7 +192,7 @@ const Index = () => {
         variant: "destructive",
       });
     }
-  }, [uploadedFiles, templateFile, directText, htmlTemplate, outputFormat, toast]);
+  }, [uploadedFiles, templateFile, directText, htmlTemplate, outputFormat, selectedTemplateId, toast]);
 
   const handleDownload = useCallback(async () => {
     if (!downloadUrl) {
@@ -238,8 +243,8 @@ const Index = () => {
     handleGenerate();
   }, [handleGenerate]);
 
-  const isActionDisabled = (!uploadedFiles.length && !directText.trim()) || 
-                          (!htmlTemplate.trim() && !outputFormat.trim() && !templateFile);
+  const isActionDisabled = (!uploadedFiles.length && !directText.trim()) ||
+                          (!htmlTemplate.trim() && !outputFormat.trim() && !templateFile && !selectedTemplateId);
 
   return (
     <div className="min-h-screen bg-background">
@@ -395,21 +400,31 @@ const Index = () => {
             </div>
             <p className="text-muted-foreground mb-6">Specify how you want your content formatted - provide HTML code, upload a template file, or just describe the format.</p>
             
-            <Tabs defaultValue="template" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+            <Tabs defaultValue="prebuilt" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="prebuilt" className="flex items-center gap-2">
+                  <LayoutTemplate className="w-4 h-4" />
+                  Templates
+                </TabsTrigger>
                 <TabsTrigger value="template" className="flex items-center gap-2">
                   <Code className="w-4 h-4" />
                   HTML Code
                 </TabsTrigger>
                 <TabsTrigger value="file" className="flex items-center gap-2">
                   <FileCode className="w-4 h-4" />
-                  Template File
+                  Upload File
                 </TabsTrigger>
                 <TabsTrigger value="format" className="flex items-center gap-2">
                   <Type className="w-4 h-4" />
-                  Describe Format
+                  Describe
                 </TabsTrigger>
               </TabsList>
+              <TabsContent value="prebuilt" className="mt-6">
+                <TemplateSelection
+                  selectedTemplate={selectedTemplateId}
+                  onSelectTemplate={setSelectedTemplateId}
+                />
+              </TabsContent>
               <TabsContent value="template" className="mt-6">
                 <HTMLTemplateInput
                   htmlTemplate={htmlTemplate}

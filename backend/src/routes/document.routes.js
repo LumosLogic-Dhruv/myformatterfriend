@@ -1,10 +1,13 @@
 const express = require('express');
-const { processDocument, downloadFile, getTemplates, uploadMiddleware, getModelStatus } = require('../controllers/document.controller');
+const { processDocument, downloadFile, getTemplates, getTemplateById, uploadMiddleware, getModelStatus } = require('../controllers/document.controller');
 
 const router = express.Router();
 
 // Get available templates
 router.get('/templates', getTemplates);
+
+// Get a specific template by ID
+router.get('/templates/:templateId', getTemplateById);
 
 // Get current model status
 router.get('/model-status', getModelStatus);

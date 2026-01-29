@@ -37,7 +37,7 @@ exports.processDocument = async (req, res) => {
   try {
     const files = req.files?.files || [];
     const templateFile = req.files?.templateFile?.[0];
-    const { htmlTemplate, directText, outputFormat } = req.body;
+    const { htmlTemplate, directText, outputFormat, templateId } = req.body;
     
     let combinedText = '';
     let currentModelUsed = getCurrentModel();
@@ -85,8 +85,20 @@ ${combinedText}
     let finalHtml;
     let templateSource = 'generated';
     let formatDescription = '';
-    
-    if (templateFile) {
+
+    // Check for pre-built template selection first
+    if (templateId) {
+      const { getTemplateHtml, getTemplateById } = require('../services/template.service');
+      const selectedTemplate = getTemplateById(templateId);
+      if (selectedTemplate) {
+        formatDescription = `Pre-built Template: ${selectedTemplate.name}`;
+        finalHtml = await analyzeDocument(textFileContent, selectedTemplate.html);
+        templateSource = 'pre-built';
+        console.log(`Using pre-built template: ${templateId}`);
+      } else {
+        return res.status(400).json({ error: `Template "${templateId}" not found` });
+      }
+    } else if (templateFile) {
       const templateContent = await extractFromAnyFile(templateFile.path, templateFile.mimetype, templateFile.originalname);
       formatDescription = `Template File: ${templateFile.originalname}`;
       finalHtml = await analyzeDocument(textFileContent, templateContent);
@@ -367,5 +379,24 @@ exports.getTemplates = (req, res) => {
   res.json({
     success: true,
     templates: getAvailableTemplates()
+  });
+};
+
+// Get a specific template by ID
+exports.getTemplateById = (req, res) => {
+  const { getTemplateById } = require('../services/template.service');
+  const { templateId } = req.params;
+
+  const template = getTemplateById(templateId);
+  if (!template) {
+    return res.status(404).json({
+      success: false,
+      error: 'Template not found'
+    });
+  }
+
+  res.json({
+    success: true,
+    template
   });
 };
